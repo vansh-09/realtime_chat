@@ -1,10 +1,20 @@
 "use client";
 import { useParams } from "next/navigation";
+import { useState } from "react";
 import { main } from "ts-node/dist/bin";
 
 const Page = () => {
   const params = useParams();
   const roomId = params.roomId as string;
+
+  const [copyStatus, setCopyStatus] = useState("COPY ");
+
+  const copyLink = () => {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url);
+    setCopyStatus("COPIED!");
+    setTimeout(() => setCopyStatus("COPY "), 2000);
+  };
 
   return (
     <main className="flex flex-col h-screen max-h-screen overflow-hidden">
@@ -14,12 +24,18 @@ const Page = () => {
             <span className="text-xs text-zinc-500 uppercase">ROOM ID</span>
             <div className="flex items-center gap-2">
               <span className="font-bold text-green-500">{roomId}</span>
-              <button className="text-[10px] bg-zinc-800 px-2 py-0 ">
-                {" "}
-                Copy
+              <button
+                onClick={copyLink}
+                className="text-[10px] bg-zinc-800 px-2 py-0.5 rounded hover:text-zinc-200 transition-colors"
+              >
+                {copyStatus}
               </button>
             </div>
           </div>
+        </div>
+        <div className="h-8 w-px bg-zinc-800" />
+        <div className="flex flex-col">
+          <span className="text-xs text-zinc-500 uppercase">SELF-DESTRUCT</span>
         </div>
       </header>
     </main>
