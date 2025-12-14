@@ -1,13 +1,22 @@
 "use client";
 import { useParams } from "next/navigation";
+import { format } from "path";
 import { useState } from "react";
 import { main } from "ts-node/dist/bin";
+
+const formatTimeRemaining = (seconds: number) => {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins}:${secs.toString().padStart(2, "0")}`;
+};
 
 const Page = () => {
   const params = useParams();
   const roomId = params.roomId as string;
 
   const [copyStatus, setCopyStatus] = useState("COPY ");
+
+  const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
 
   const copyLink = () => {
     const url = window.location.href;
@@ -36,6 +45,17 @@ const Page = () => {
         <div className="h-8 w-px bg-zinc-800" />
         <div className="flex flex-col">
           <span className="text-xs text-zinc-500 uppercase">SELF-DESTRUCT</span>
+          <span
+            className={`text-sm font-bold items-center gap-2 ${
+              !timeRemaining !== null && timeRemaining < 60
+                ? "text-red-500"
+                : "text-amber-500"
+            }`}
+          >
+            {timeRemaining !== null
+              ? formatTimeRemaining(timeRemaining)
+              : "--:--"}
+          </span>
         </div>
       </header>
     </main>
