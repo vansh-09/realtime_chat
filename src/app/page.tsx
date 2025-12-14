@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { main } from "ts-node/dist/bin";
 import { client } from "../lib/client";
+import { useRouter } from "next/navigation";
 
 const ANIMALS = ["wolf", "tiger", "eagle", "shark", "panther", "hawk", "bear"];
 
@@ -18,6 +19,8 @@ const generateUsername = () => {
 
 export default function Home() {
   const [username, setUsername] = useState("");
+  const router = useRouter();
+
   useEffect(() => {
     const main = () => {
       const stored = localStorage.getItem(STORAGE_KEY);
@@ -36,6 +39,10 @@ export default function Home() {
   const { mutate: createRoom } = useMutation({
     mutationFn: async () => {
       const res = await client.room.create.post();
+
+      if (res.status === 200) {
+        router.push(`/room/${res.data?.roomId}`);
+      }
     },
   });
   return (
