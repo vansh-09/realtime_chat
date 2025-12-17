@@ -1,7 +1,7 @@
 "use client";
 import { useParams } from "next/navigation";
 import { format } from "path";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { main } from "ts-node/dist/bin";
 
 const formatTimeRemaining = (seconds: number) => {
@@ -17,6 +17,10 @@ const Page = () => {
   const [copyStatus, setCopyStatus] = useState("COPY ");
 
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
+
+  const [input, setinput] = useState("");
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const copyLink = () => {
     const url = window.location.href;
@@ -46,7 +50,7 @@ const Page = () => {
         <div className="flex flex-col">
           <span className="text-xs text-zinc-500 uppercase">SELF-DESTRUCT</span>
           <span
-            className={`text-sm font-bold items-center gap-2 ${
+            className={`text-sm font-bold items-center gap-2 {
               !timeRemaining !== null && timeRemaining < 60
                 ? "text-red-500"
                 : "text-amber-500"
@@ -70,10 +74,23 @@ const Page = () => {
               {">"}
             </span>
             <input
+              value={input}
+              onChange={(e) => setinput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && input.trim()) {
+                  // send message
+                  inputRef.current!.focus();
+                }
+              }}
+              placeholder="Type your message..."
+              autoFocus
               type="text"
               className="w-full bg-black border border-zinc-800 focus:border-zinc-700 focus:outline-none transition-colors text-zinc-100 placeholder:text-zinc-700 py-3 pl-8 pr-4 text-sm"
             />
           </div>
+          <button className="bg-zinc-800 px-6 text-sm font-bold hover:text-zinc-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+            SEND
+          </button>
         </div>
       </div>
     </main>
